@@ -1,0 +1,37 @@
+services:
+  sistem-desp:
+    build: ./sistem_desp
+    volumes:
+      - ./sistem_desp:/app
+    container_name: sistem-desp
+    command: python manage.py runserver
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db-desp
+    environment:
+      - POSTGRES_DB=database
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_HOST=db-desp
+
+  db-desp:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    container_name: db-desp
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_DB: database
+      POSTGRES_PASSWORD: admin 
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: db-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db-desp
