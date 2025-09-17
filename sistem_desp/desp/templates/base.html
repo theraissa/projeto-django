@@ -1,0 +1,128 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despachante de Trânsito</title>
+
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+
+    <!--LINK DA FONTE-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% block content %}
+
+    <!--CABEÇA - NAVEGAÇÃO-->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#sessao-carrossel">Funcionalidades</a></li>
+                <li><a href="#sessao-sobre-nos">Sobre nós</a></li>
+                <li><a href="/login/" class="button">Login</a></li>
+                <li><a href="/cliente_desp" class="button-cadastro">Cadastrar</a></li>
+            </ul>   
+        </nav>
+    </header>
+
+    <!--SESSÃO - LOGIN-->
+    <section class="sessao-login-form">
+        <h1>Despachante de Trânsito</h1>
+        <p>Sistema Web para Centralizar Serviços e Comunicação Destinado</p>
+        <div class="login-form">
+            <input type="email" placeholder="you@example.com">
+            <button>Entrar</button>
+        </div>
+    </section>
+    <section id="sessao-carrossel" class="sessao-carrossel">
+        <div class="carrossel-container">
+            <div class="carrossel-card">
+                <h1 class="titulo-sessao">1. Busca e Solicitação de Serviços</h1>
+                <p class="parag-sessao">Clientes podem pesquisar despachantes por nome ou município, acessar seus perfis, visualizar os serviços oferecidos e solicitar diretamente o atendimento desejado, com orientações claras sobre a documentação necessária.</p>
+            </div>
+            <div class="carrossel-card">
+                <h1 class="titulo-sessao">2. Gestão de Perfil e Serviços</h1>
+                <p class="parag-sessao">Despachantes têm controle total sobre seus perfis e serviços: podem cadastrar, editar e excluir atividades prestadas, informar documentos exigidos e acompanhar em tempo real os chamados recebidos, com acesso a uma agenda organizada por data e horário.</p>
+            </div>
+            <div class="carrossel-card">
+                <h1 class="titulo-sessao">3. Acompanhamento de Chamados</h1>
+                <p class="parag-sessao">Tanto clientes quanto despachantes podem consultar o histórico e o status atual de cada solicitação — desde “Documentação Pendente” até “Serviço Completo” — garantindo transparência e comunicação eficiente durante todo o processo.</p>
+            </div>
+            <div class="carrossel-card">
+                <h1 class="titulo-sessao">4. Segurança e Validação</h1>
+                <p class="parag-sessao">O sistema valida a identidade de todos os usuários (clientes e despachantes) e exige autenticação em dois fatores no login, além de verificar periodicamente o registro profissional dos despachantes no CRDD. Todas as interações são protegidas por criptografia e notificações automáticas por e-mail.</p>
+            </div>
+        </div>
+    </section>
+    <section id="sessao-sobre-nos" class="sessao-sobre-nos sobre-nos-com-imagem">
+        <div class="sobre-nos-texto">
+            <h1 class="titulo-sobre-nos">Sobre Nós</h1>
+            <p class="parag-sobre-nos">
+                Somos uma plataforma web desenvolvida especialmente para modernizar e centralizar os serviços oferecidos por despachantes de trânsito. Nosso objetivo é conectar clientes a profissionais qualificados de forma prática, segura e eficiente, eliminando a necessidade de múltiplos canais de comunicação e facilitando todo o processo — da solicitação à conclusão dos serviços.
+            </p>
+            <p class="parag-sobre-nos">
+                Com uma interface intuitiva e funcionalidades completas, permitimos que clientes encontrem despachantes em sua cidade, visualizem serviços disponíveis, saibam exatamente quais documentos são necessários e acompanhem o andamento de seus chamados em tempo real. Para os despachantes, oferecemos uma solução robusta para gerenciar perfis, serviços e agendamentos, otimizando sua rotina e ampliando sua visibilidade no mercado.
+            </p>
+        </div>
+    </section>
+    <!--RODAPÉ-->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-coluna">
+                <h4>Use cases</h4>
+                <ul>
+                    <li><a href="#">UI design</a></li>
+                    <li><a href="#">UX design</a></li>
+                    <li><a href="#">Wireframing</a></li>
+                    <li><a href="#">Diagramming</a></li>
+                    <li><a href="#">User Research</a></li>
+                    <li><a href="#">Prototyping</a></li>
+                </ul>
+            </div>
+            <div class="footer-coluna">
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="#">Design</a></li>
+                    <li><a href="#">Prototyping</a></li>
+                    <li><a href="#">Development features</a></li>
+                    <li><a href="#">Integrations</a></li>
+                    <li><a href="#">Templates</a></li>
+                </ul>
+            </div>
+            <div class="footer-coluna">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Best practices</a></li>
+                    <li><a href="#">Suporte</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-coluna">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-coluna contato">
+                <h4>Contact</h4>
+                <p>Email: info@seudominio.com</p>
+                <p>Phone: (XX) XXXX-XXXX</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Seu Domínio. Todos os direitos reservados. | <a href="#">Termos de Uso</a> | <a href="#">Política de Privacidade</a></p>
+        </div>
+    </footer>
+    {% endblock %}
+
+</body>
+</html>
