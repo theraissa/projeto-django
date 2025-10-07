@@ -1,37 +1,49 @@
 services:
   sistem-desp:
-    build: ./sistem_desp
+    build: .
     volumes:
       - ./sistem_desp:/app
     container_name: sistem-desp
-    command: python manage.py runserver
     ports:
       - "8000:8000"
-    depends_on:
-      - db-desp
+    command: python manage.py runserver 0.0.0.0:8000
     environment:
       - POSTGRES_DB=database
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=admin
       - POSTGRES_HOST=db-desp
+    depends_on:
+      db-desp:
+        condition: service_healthy
 
   db-desp:
-    image: postgres
+    image: postgres:15-alpine
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - db_volume:/var/lib/postgresql/data
     container_name: db-desp
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: dbuser
       POSTGRES_DB: database
       POSTGRES_PASSWORD: admin 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  pgadmin:
+  db-pgadmin:
     image: dpage/pgadmin4
     container_name: db-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - db-desp
+
+volumes:
+  db_volume:
+    driver: local

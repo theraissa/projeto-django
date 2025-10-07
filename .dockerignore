@@ -1,0 +1,14 @@
+#Ignora o ambiente virtual
+.venv/
+
+#Ignora o cache local do Python
+pycache/
+*.pyc
+
+#Ignora arquivos de banco de dados locais, que causam o erro de permissão.
+data/
+*.sqlite3
+
+#Ignora arquivos de configuração e git
+.git/
+.gitignore

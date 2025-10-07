@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if modo == 'editar' %}Editar Serviço{% else %}Criar Novo Serviço{% endif %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .app-header { background-color: #1f3556; color: white; }
+        .document-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            background-color: #fff;
+        }
+        .document-item input {
+            flex-grow: 1;
+        }
+        .drag-handle {
+            cursor: move;
+            font-weight: bold;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="app-header p-3 mb-4 text-center shadow">
+        <nav>
+            <h1 class="h4 mb-0">{% if modo == 'editar' %}Editar Serviço{% else %}Criar Novo Serviço{% endif %}</h1>
+        </nav>
+    </header>
+
+    <main class="container-fluid d-flex justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            
+            <div class="mb-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <form method="post" action="{% if modo == 'editar' %}{% url 'editar_servicos' %}{% else %}{% url 'criar_servicos' %}{% endif %}" class="p-4 bg-white rounded shadow">
+                {% csrf_token %}
+
+                <h3 class="mb-4">Informações Essenciais</h3>
+                
+                <div class="mb-3">
+                    <label for="id_nome_servico" class="form-label">Nome do Serviço:</label>
+                    {% if modo == 'editar' %}
+                        <input type="hidden" name="id_servico" value="{{ servico.pk }}">
+                    {% endif %}
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="id_nome_servico" 
+                        name="nome_servico" 
+                        placeholder="Ex: Transferência de Propriedade"
+                        value="{{ nome_servico_preenchido|default:servico.nome|default:'' }}"
+                        required>
+                    {% comment %} 
+                        Lógica de Value: 
+                        1. Tenta pegar o valor após erro de validação (nome_servico_preenchido).
+                        2. Se não houver, pega o valor do objeto (servico.nome) se estiver editando.
+                        3. Se não houver nenhum dos anteriores, deixa vazio.
+                    {% endcomment %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Documentos Necessários:</label>
+                    <div id="documentos-container">
+                        
+                        {% with documentos_a_iterar=documentos_preenchidos|default:documentos %}
+                            {% if documentos_a_iterar %}
+                                {% for doc in documentos_a_iterar %}
+                                    <div class="document-item" draggable="true">
+                                        <span class="drag-handle">☰</span>
+                                        <input type="text" class="form-control form-control-sm" name="documento_necessario[]" value="{{ doc|default:'' }}">
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-document-button">Remover</button>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="document-item" draggable="true">
+                                    <span class="drag-handle">☰</span>
+                                    <input type="text" class="form-control form-control-sm" name="documento_necessario[]" placeholder="Ex: Cópia do RG e CPF">
+                                    <button type="button" class="btn btn-sm btn-outline-danger remove-document-button">Remover</button>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    
+                    <button type="button" id="adicionar-documento" class="btn btn-sm btn-outline-primary mt-2">Adicionar Documento</button>
+                </div>
+                
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        {% if modo == 'editar' %}Atualizar Serviço{% else %}Criar Serviço{% endif %}
+                    </button>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="{% url 'servicos' %}" class="btn btn-link text-secondary">Voltar para a Lista de Serviços</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('documentos-container');
+            const addButton = document.getElementById('adicionar-documento');
+
+            addButton.addEventListener('click', function () {
+                const newItem = document.createElement('div');
+                newItem.classList.add('document-item');
+                newItem.setAttribute('draggable', 'true');
+
+                newItem.innerHTML = `
+                    <span class="drag-handle">☰</span>
+                    <input type="text" class="form-control form-control-sm" name="documento_necessario[]" placeholder="Ex: Cópia do RG e CPF">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-document-button">Remover</button>
+                `;
+
+                container.appendChild(newItem);
+            });
+
+            container.addEventListener('click', function (e) {
+                if (e.target.classList.contains('remove-document-button')) {
+                    // Impede a remoção se for o último item
+                    if (container.children.length > 1) { 
+                        e.target.parentElement.remove();
+                    } else {
+                         e.target.previousElementSibling.value = ''; // Limpa o valor em vez de remover
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
