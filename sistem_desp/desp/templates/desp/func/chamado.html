@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chamados - Despachante de Trânsito</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .app-header { background-color: #1f3556; color: white; }
+        .nav-link-custom { color: white !important; padding: .5rem 1rem; border-radius: .25rem; transition: background-color 0.3s; }
+        .nav-link-custom:hover { background-color: #3b5072; }
+        .chamado-item-card { margin-bottom: 0.75rem; border: 1px solid #dee2e6; cursor: pointer; }
+        .chamado-item-card:hover { background-color: #e9ecef; }
+    </style>
+</head>
+<body>
+    
+    <header class="app-header p-3 mb-5 shadow">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <h1 class="h4 mb-0">Olá, Despachante {{ nome_despachante }}!</h1>
+            <nav>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'servicos' %}" class="nav-link-custom">Serviços</a>
+                    <a href="{% url 'chamados' %}" class="nav-link-custom bg-primary fw-bold">Chamados</a>
+                    <a href="{% url 'agendamentos' %}" class="nav-link-custom">Agendamentos</a>
+                    <a href="{% url 'perfil' %}" class="nav-link-custom">Seu Perfil</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <main>
+            <h2 class="mb-4 text-center">Chamados</h2>
+            
+            <div class="row g-3 mb-5 justify-content-center">
+                <div class="col-md-6 col-lg-3">
+                    <input type="text" class="form-control" placeholder="Pesquisar por Serviço" aria-label="Serviço">
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <input type="text" class="form-control" placeholder="Pesquisar por Número" aria-label="Número">
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <input type="text" class="form-control" placeholder="Pesquisar Data Abertura" aria-label="Data Abertura">
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <input type="text" class="form-control" placeholder="Pesquisar por Estado" aria-label="Estado">
+                </div>
+            </div>
+            
+            <section class="chamados row justify-content-center">
+                <div class="col-lg-10">
+                    
+                    <a href="#" class="card chamado-item-card p-3 d-flex flex-row justify-content-between align-items-center text-decoration-none text-dark shadow-sm">
+                        <span class="fs-5 fw-medium">Nº 0001 - Transferência de Veículo</span>
+                        <div class="text-end">
+                            <span class="d-block text-secondary">Aberto em: 07/10/2025</span>
+                            <span class="d-block badge text-bg-warning">EM ANÁLISE</span>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="card chamado-item-card p-3 d-flex flex-row justify-content-between align-items-center text-decoration-none text-dark shadow-sm">
+                        <span class="fs-5 fw-medium">Nº 0002 - Regularização de Débitos </span>
+                        <div class="text-end">
+                            <span class="d-block text-secondary">Aberto em: 05/10/2025</span>
+                            <span class="d-block badge text-bg-success">CONCLUÍDO</span>
+                        </div>
+                    </a>
+
+                    <a href="#" class="card chamado-item-card p-3 d-flex flex-row justify-content-between align-items-center text-decoration-none text-dark shadow-sm">
+                        <span class="fs-5 fw-medium">Nº 0003 - Licenciamento </span>
+                        <div class="text-end">
+                            <span class="d-block text-secondary">Aberto em: 01/10/2025</span>
+                            <span class="d-block badge text-bg-danger">PENDENTE</span>
+                        </div>
+                    </a>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

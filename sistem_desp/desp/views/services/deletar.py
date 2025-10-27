@@ -1,7 +1,11 @@
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from desp.models.servicos import Servico
+
 
 @login_required
 def deletar_servico(request):
-    """Deleta um serviço existente."""
     
     if request.method == 'POST':
         service_id = request.POST.get('id_servico')
@@ -10,15 +14,11 @@ def deletar_servico(request):
             messages.error(request, 'ID de serviço não fornecido.')
             return redirect('servicos')
 
-        # Busca o serviço, garantindo que ele pertença ao usuário logado e existe
-        # Se não encontrar ou não pertencer ao usuário, lança 404
         servico = get_object_or_404(Servico, pk=service_id, despachante=request.user)
         
         try:
             nome_servico = servico.nome
-            servico.delete() 
-            # O CASCADE (no Model) garante que os DocumentoServico relacionados também sejam excluídos.
-            
+            servico.delete()             
             messages.success(request, f'Serviço "{nome_servico}" excluído com sucesso.')
             
         except Exception as e:

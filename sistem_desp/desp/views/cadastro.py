@@ -1,4 +1,3 @@
-# flake8: noqa
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from desp.models.desp_user import DespUser

@@ -1,1 +1,5 @@
+# Ignora ambientes virtuais
 .venv/
+
+# Ignora o diretório data/db inteiro e seus conteúdos
+data/db/

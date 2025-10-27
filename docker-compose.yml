@@ -8,10 +8,11 @@ services:
       - "8000:8000"
     command: python manage.py runserver 0.0.0.0:8000
     environment:
-      - POSTGRES_DB=database
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_HOST=db-desp
+      DATABASE_NAME: ${DB_NAME}
+      DATABASE_USER: ${DB_USER}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+      DATABASE_HOST: ${DB_HOST}
+      DATABASE_PORT: ${DB_PORT}
     depends_on:
       db-desp:
         condition: service_healthy
@@ -23,10 +24,10 @@ services:
     container_name: db-desp
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: dbuser
-      POSTGRES_DB: database
-      POSTGRES_PASSWORD: admin 
+    environment:  
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD} 
+      POSTGRES_DB: ${DB_NAME}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
@@ -39,10 +40,11 @@ services:
     ports:
       - "5050:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     depends_on:
-      - db-desp
+      db-desp:
+        condition: service_healthy
 
 volumes:
   db_volume:

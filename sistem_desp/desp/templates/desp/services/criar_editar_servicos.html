@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if modo == 'editar' %}Editar Serviço{% else %}Criar Novo Serviço{% endif %}</title>
     
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +24,7 @@
             border: 1px solid #dee2e6;
             border-radius: .25rem;
             background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         .document-item input {
             flex-grow: 1;
@@ -57,41 +58,60 @@
                 {% endif %}
             </div>
             
-            <form method="post" action="{% if modo == 'editar' %}{% url 'editar_servicos' %}{% else %}{% url 'criar_servicos' %}{% endif %}" class="p-4 bg-white rounded shadow">
+            <form method="post" action="{% if modo == 'editar' %}{% url 'editar_servico' %}{% else %}{% url 'criar_servicos' %}{% endif %}" class="p-4 bg-white rounded shadow">
                 {% csrf_token %}
 
                 <h3 class="mb-4">Informações Essenciais</h3>
                 
-                <div class="mb-3">
-                    <label for="id_nome_servico" class="form-label">Nome do Serviço:</label>
-                    {% if modo == 'editar' %}
-                        <input type="hidden" name="id_servico" value="{{ servico.pk }}">
-                    {% endif %}
-                    <input 
-                        type="text" 
-                        class="form-control" 
-                        id="id_nome_servico" 
-                        name="nome_servico" 
-                        placeholder="Ex: Transferência de Propriedade"
-                        value="{{ nome_servico_preenchido|default:servico.nome|default:'' }}"
-                        required>
-                    {% comment %} 
-                        Lógica de Value: 
-                        1. Tenta pegar o valor após erro de validação (nome_servico_preenchido).
-                        2. Se não houver, pega o valor do objeto (servico.nome) se estiver editando.
-                        3. Se não houver nenhum dos anteriores, deixa vazio.
-                    {% endcomment %}
-                </div>
+                {# Bloco para o Nome do Serviço #}
+                {% with valor_nome_existente=servico.nome|default:'' %}
+                    <div class="mb-3">
+                        <label for="id_nome_servico" class="form-label">Nome do Serviço:</label>
+                        
+                        {% if modo == 'editar' %}
+                            {# O ID do serviço é enviado apenas no modo de edição #}
+                            <input type="hidden" name="id_servico" value="{{ servico.pk }}">
+                        {% endif %}
+                        
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="id_nome_servico" 
+                            name="nome_servico" 
+                            placeholder="Ex: Transferência de Propriedade"
+                            {# Preenche com valor_submetido > valor_objeto #}
+                            value="{{ nome_servico_preenchido|default:valor_nome_existente }}"
+                            required>
+                    </div>
+                {% endwith %}
+
+                {# NOVO BLOCO: Descrição do Serviço #}
+                {% with valor_descricao_existente=servico.descricao|default:'' %}
+                    <div class="mb-3">
+                        <label for="id_descricao_servico" class="form-label">Descrição Detalhada (Opcional):</label>
+                        <textarea 
+                            class="form-control" 
+                            id="id_descricao_servico" 
+                            name="descricao_servico" 
+                            rows="3" 
+                            placeholder="Descreva o processo, público-alvo ou detalhes extras.">
+                            {# Preenche com valor_submetido > valor_objeto #}{{ descricao_servico_preenchida|default:valor_descricao_existente }}</textarea>
+                    </div>
+                {% endwith %}
+                {# FIM DO NOVO BLOCO #}
 
                 <div class="mb-4">
                     <label class="form-label">Documentos Necessários:</label>
                     <div id="documentos-container">
                         
-                        {% with documentos_a_iterar=documentos_preenchidos|default:documentos %}
+                        {# Corrigido: Incluindo |default:'' para evitar VariableDoesNotExist caso o template tente acessar 'documentos_atuais' #}
+                        {# Quando falha no POST, 'documentos_atuais' não existe, então usamos 'documentos_preenchidos'. #}
+                        {% with documentos_a_iterar=documentos_preenchidos|default:documentos_atuais|default:'' %}
                             {% if documentos_a_iterar %}
                                 {% for doc in documentos_a_iterar %}
                                     <div class="document-item" draggable="true">
                                         <span class="drag-handle">☰</span>
+                                        {# O filtro |default:'' garante que o valor seja uma string vazia se o item da lista for None #}
                                         <input type="text" class="form-control form-control-sm" name="documento_necessario[]" value="{{ doc|default:'' }}">
                                         <button type="button" class="btn btn-sm btn-outline-danger remove-document-button">Remover</button>
                                     </div>
@@ -110,7 +130,7 @@
                 </div>
                 
                 <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-success btn-lg">
+                    <button type="submit" class="btn btn-success btn-lg shadow">
                         {% if modo == 'editar' %}Atualizar Serviço{% else %}Criar Serviço{% endif %}
                     </button>
                 </div>
@@ -122,7 +142,7 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -145,11 +165,11 @@
 
             container.addEventListener('click', function (e) {
                 if (e.target.classList.contains('remove-document-button')) {
-                    // Impede a remoção se for o último item
                     if (container.children.length > 1) { 
                         e.target.parentElement.remove();
                     } else {
-                         e.target.previousElementSibling.value = ''; // Limpa o valor em vez de remover
+                         const input = e.target.parentElement.querySelector('input[type="text"]');
+                         if (input) input.value = '';
                     }
                 }
             });
